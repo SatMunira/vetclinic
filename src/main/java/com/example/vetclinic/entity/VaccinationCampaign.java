@@ -1,18 +1,12 @@
 package com.example.vetclinic.entity;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class VaccinationCampaign {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,4 +14,38 @@ public class VaccinationCampaign {
     private String vaccineName;
     private LocalDateTime date;
     private int availableSlots;
+
+    // Getters
+    public Long getId() {
+        return id;
+    }
+
+    public String getVaccineName() {
+        return vaccineName;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public int getAvailableSlots() {
+        return availableSlots;
+    }
+
+    // Setters
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setVaccineName(String vaccineName) {
+        this.vaccineName = vaccineName;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
+
+    public void setAvailableSlots(int availableSlots) {
+        this.availableSlots = availableSlots;
+    }
 }

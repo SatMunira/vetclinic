@@ -1,15 +1,8 @@
 package com.example.vetclinic.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,5 +13,14 @@ public class Pet {
 
     @ManyToOne
     private User owner;
-}
 
+    public Long getId() { return id; }
+    public String getName() { return name; }
+    public String getSpecies() { return species; }
+    public User getOwner() { return owner; }
+
+    public void setId(Long id) { this.id = id; }
+    public void setName(String name) { this.name = name; }
+    public void setSpecies(String species) { this.species = species; }
+    public void setOwner(User owner) { this.owner = owner; }
+}

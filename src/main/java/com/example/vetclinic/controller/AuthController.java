@@ -6,26 +6,29 @@ import com.example.vetclinic.dto.RegisterRequest;
 import com.example.vetclinic.entity.User;
 import com.example.vetclinic.repository.UserRepository;
 import com.example.vetclinic.security.JwtService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
-@RequiredArgsConstructor
+@RequestMapping("/api/auth")
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
@@ -33,9 +36,11 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
 
-        User user = userRepository.findByUsername(request.getUsername()).orElseThrow();
-        String jwt = jwtService.generateToken((UserDetails) user);
-        return ResponseEntity.ok(new AuthResponse(jwt));
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        String token = jwtService.generateToken(user);
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 
     @PostMapping("/register")
@@ -46,7 +51,6 @@ public class AuthController {
         user.setEmail(request.getEmail());
         user.setRole(request.getRole());
         userRepository.save(user);
-        return ResponseEntity.ok("User registered");
+        return ResponseEntity.ok("User registered successfully");
     }
 }
-
