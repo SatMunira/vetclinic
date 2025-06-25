@@ -29,6 +29,7 @@ public class VaccinationController {
     public ResponseEntity<?> createCampaign(@RequestParam String vaccineName,
                                             @RequestParam String date,
                                             @RequestParam int slots,
+                                            @RequestParam String description,
                                             Principal principal) {
         User admin = userRepository.findByUsername(principal.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("Admin not found"));
@@ -41,9 +42,24 @@ public class VaccinationController {
         campaign.setVaccineName(vaccineName);
         campaign.setDate(LocalDateTime.parse(date));
         campaign.setAvailableSlots(slots);
+        campaign.setDescription(description);
 
         return ResponseEntity.ok(campaignRepository.save(campaign));
     }
+
+    // 👁 Админ: получить всех участников
+    @GetMapping("/registrations/all")
+    public ResponseEntity<?> getAllRegistrations(Principal principal) {
+        User user = userRepository.findByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if (user.getRole() != Role.ADMIN) {
+            return ResponseEntity.status(403).body("Access denied");
+        }
+
+        return ResponseEntity.ok(registrationRepository.findAll());
+    }
+
 
     // 👁 Клиент и все: список всех кампаний
     @GetMapping("/campaigns")

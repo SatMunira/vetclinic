@@ -15,6 +15,17 @@ public class VaccinationCampaign {
     private LocalDateTime date;
     private int availableSlots;
 
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+
     // Getters
     public Long getId() {
         return id;
